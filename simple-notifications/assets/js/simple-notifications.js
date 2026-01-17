@@ -29,18 +29,23 @@
      * Initialize the notification bell
      */
     function init() {
+        // Support both standalone bell and DOFS dashboard integration
         $bell = $('#simple-notifications-bell');
-        if (!$bell.length) {
-            return;
-        }
-
         $badge = $('#simple-notifications-badge');
         $dropdown = $('#simple-notifications-dropdown');
         $list = $('#simple-notifications-list');
         $markAllBtn = $('#simple-notifications-mark-all');
 
+        // If no badge found, nothing to do
+        if (!$badge.length && !$bell.length && !$dropdown.length) {
+            return;
+        }
+
         bindEvents();
         startPolling();
+
+        // Initialize page handlers
+        initPageHandlers();
     }
 
     /**
@@ -69,15 +74,12 @@
         });
 
         // Handle notification click (mark as read)
-        $list.on('click', '.simple-notifications-item', function() {
+        $(document).on('click', '.simple-notifications-item', function() {
             var notificationId = $(this).data('id');
             if (notificationId) {
                 markAsRead(notificationId);
             }
         });
-
-        // Page-specific handlers
-        initPageHandlers();
     }
 
     /**

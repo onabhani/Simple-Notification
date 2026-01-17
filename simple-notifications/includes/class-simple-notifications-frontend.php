@@ -46,8 +46,10 @@ class Simple_Notifications_Frontend {
         // Enqueue scripts and styles
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 
-        // Add bell to nav menu
-        add_filter( 'wp_nav_menu_items', array( $this, 'add_bell_to_menu' ), 10, 2 );
+        // Add bell to nav menu (disabled by default when using DOFS dashboard)
+        if ( apply_filters( 'simple_notifications_add_to_nav_menu', true ) ) {
+            add_filter( 'wp_nav_menu_items', array( $this, 'add_bell_to_menu' ), 10, 2 );
+        }
 
         // Register shortcodes
         add_shortcode( 'simple_notifications_bell', array( $this, 'shortcode_bell' ) );
@@ -55,6 +57,13 @@ class Simple_Notifications_Frontend {
 
         // Add AJAX URL to head
         add_action( 'wp_head', array( $this, 'output_ajax_url' ) );
+
+        // Simple Dashboard (DOFS) integration
+        add_action( 'dofs_topbar_notifications', array( $this, 'render_dofs_dropdown' ) );
+        add_action( 'dofs_notification_count', array( $this, 'render_dofs_badge_count' ) );
+
+        // Generic action hook for custom placements
+        add_action( 'simple_notifications_render_bell', array( $this, 'action_render_bell' ) );
     }
 
     /**
@@ -140,6 +149,82 @@ class Simple_Notifications_Frontend {
         $items    .= '<li class="menu-item simple-notifications-menu-item">' . $bell_html . '</li>';
 
         return $items;
+    }
+
+    /**
+     * Render bell via action hook
+     */
+    public function action_render_bell() {
+        if ( ! is_user_logged_in() ) {
+            return;
+        }
+        echo $this->render_bell();
+    }
+
+    /**
+     * Render dropdown content for DOFS dashboard topbar
+     * Outputs just the notification list (dropdown content without the bell icon)
+     */
+    public function render_dofs_dropdown() {
+        if ( ! is_user_logged_in() ) {
+            return;
+        }
+
+        $user_id       = get_current_user_id();
+        $notifications = $this->api->get_notifications( $user_id, array(
+            'limit' => 10,
+        ) );
+        ?>
+        <div class="simple-notifications-dofs-dropdown" id="simple-notifications-dropdown">
+            <div class="simple-notifications-list" id="simple-notifications-list">
+                <?php if ( empty( $notifications ) ) : ?>
+                    <div class="simple-notifications-empty">
+                        <?php esc_html_e( 'No notifications', 'simple-notifications' ); ?>
+                    </div>
+                <?php else : ?>
+                    <?php foreach ( $notifications as $notification ) : ?>
+                        <?php $formatted = $this->api->format_notification( $notification ); ?>
+                        <a href="<?php echo esc_url( $formatted['url'] ?: '#' ); ?>"
+                           class="simple-notifications-item <?php echo $formatted['is_read'] ? 'is-read' : 'is-unread'; ?>"
+                           data-id="<?php echo esc_attr( $formatted['id'] ); ?>">
+                            <span class="simple-notifications-item-source"><?php echo esc_html( $formatted['source_label'] ); ?></span>
+                            <span class="simple-notifications-item-title"><?php echo esc_html( $formatted['title'] ); ?></span>
+                            <span class="simple-notifications-item-time"><?php echo esc_html( $formatted['time_ago'] ); ?></span>
+                        </a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            <div class="simple-notifications-footer">
+                <a href="<?php echo esc_url( $this->get_notifications_page_url() ); ?>" class="simple-notifications-view-all">
+                    <?php esc_html_e( 'View all notifications', 'simple-notifications' ); ?>
+                </a>
+                <button type="button" class="simple-notifications-mark-all-link" id="simple-notifications-mark-all">
+                    <?php esc_html_e( 'Mark all as read', 'simple-notifications' ); ?>
+                </button>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Render badge count for DOFS dashboard topbar
+     * Outputs just the number (or empty if zero)
+     */
+    public function render_dofs_badge_count() {
+        if ( ! is_user_logged_in() ) {
+            return;
+        }
+
+        $unread_count = $this->api->get_unread_count( get_current_user_id() );
+
+        // Output the count with a span for JS updates
+        ?>
+        <span class="simple-notifications-badge-count" id="simple-notifications-badge" data-count="<?php echo esc_attr( $unread_count ); ?>">
+            <?php if ( $unread_count > 0 ) : ?>
+                <?php echo esc_html( $unread_count > 99 ? '99+' : $unread_count ); ?>
+            <?php endif; ?>
+        </span>
+        <?php
     }
 
     /**

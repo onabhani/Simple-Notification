@@ -469,3 +469,60 @@ a.simple-notifications-page-item-title:hover {
         margin-top: 12px;
     }
 }
+
+/* ============================================
+   DOFS Dashboard Integration Styles
+   ============================================ */
+
+/* Badge count for DOFS topbar */
+.simple-notifications-badge-count {
+    display: inline-block;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    color: #fff;
+    background-color: #e53935;
+    border-radius: 9px;
+}
+
+.simple-notifications-badge-count:empty {
+    display: none;
+}
+
+/* DOFS dropdown container */
+.simple-notifications-dofs-dropdown {
+    width: 100%;
+    max-width: 360px;
+}
+
+.simple-notifications-dofs-dropdown .simple-notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.simple-notifications-dofs-dropdown .simple-notifications-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-top: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+}
+
+.simple-notifications-mark-all-link {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0;
+}
+
+.simple-notifications-mark-all-link:hover {
+    color: #3b82f6;
+    text-decoration: underline;
+}

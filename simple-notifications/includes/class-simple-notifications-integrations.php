@@ -44,7 +44,10 @@ class Simple_Notifications_Integrations {
      * Initialize integration hooks
      */
     private function init_hooks() {
-        // Gravity Flow integration
+        // Gravity Flow step settings (admin)
+        add_filter( 'gravityflow_step_settings', array( $this, 'add_gravityflow_step_settings' ), 10, 2 );
+
+        // Gravity Flow integration (frontend processing)
         add_action( 'gravityflow_post_process_workflow', array( $this, 'handle_gravityflow_workflow' ), 10, 4 );
         add_action( 'gravityflow_step_complete', array( $this, 'handle_gravityflow_step_complete' ), 10, 4 );
         add_action( 'gravityflow_assignee_status_update', array( $this, 'handle_gravityflow_assignee_update' ), 10, 4 );
@@ -75,11 +78,61 @@ class Simple_Notifications_Integrations {
     }
 
     /* =========================================
+       GRAVITY FLOW STEP SETTINGS
+       ========================================= */
+
+    /**
+     * Add bell notification settings to Gravity Flow step settings
+     *
+     * @param array $settings Current step settings
+     * @param object $step    Step object
+     * @return array Modified settings
+     */
+    public function add_gravityflow_step_settings( $settings, $step ) {
+        $settings['fields'][] = array(
+            'name'  => 'bell_notification_section',
+            'label' => esc_html__( 'Bell Notification', 'simple-notifications' ),
+            'type'  => 'section',
+        );
+
+        $settings['fields'][] = array(
+            'name'          => 'bell_notification_enabled',
+            'label'         => esc_html__( 'Send Notification', 'simple-notifications' ),
+            'type'          => 'checkbox',
+            'default_value' => false,
+            'choices'       => array(
+                array(
+                    'label' => esc_html__( 'Send a notification on step complete', 'simple-notifications' ),
+                    'name'  => 'bell_notification_enabled',
+                ),
+            ),
+        );
+
+        $settings['fields'][] = array(
+            'name'          => 'bell_notification_content',
+            'label'         => esc_html__( 'Notification Content', 'simple-notifications' ),
+            'type'          => 'textarea',
+            'default_value' => '',
+            'class'         => 'merge-tag-support mt-position-right',
+            'dependency'    => array(
+                'live'   => true,
+                'fields' => array(
+                    array(
+                        'field' => 'bell_notification_enabled',
+                    ),
+                ),
+            ),
+        );
+
+        return $settings;
+    }
+
+    /* =========================================
        GRAVITY FLOW INTEGRATION
        ========================================= */
 
     /**
-     * Handle Gravity Flow workflow processing
+     * Handle Gravity Flow workflow processing (when step starts/is assigned)
      *
      * @param array  $form    Form object
      * @param int    $entry_id Entry ID
@@ -104,7 +157,7 @@ class Simple_Notifications_Integrations {
         }
 
         // Generate notification details
-        $step_name = $step->get_name();
+        $step_name  = $step->get_name();
         $form_title = rgar( $form, 'title', __( 'Form', 'simple-notifications' ) );
 
         /* translators: 1: Step name, 2: Form title */
@@ -137,25 +190,38 @@ class Simple_Notifications_Integrations {
      * @param object $step     Step object
      */
     public function handle_gravityflow_step_complete( $step_id, $entry_id, $form, $step ) {
-        // Optionally notify the entry creator when a step is complete
+        if ( ! class_exists( 'Gravity_Flow' ) || ! class_exists( 'GFAPI' ) ) {
+            return;
+        }
+
+        // Check if bell notification is enabled for this step
+        $bell_enabled = $step->get_setting( 'bell_notification_enabled' );
+        if ( ! $bell_enabled ) {
+            return;
+        }
+
         $entry = GFAPI::get_entry( $entry_id );
         if ( is_wp_error( $entry ) || empty( $entry['created_by'] ) ) {
             return;
         }
 
-        $notify_on_complete = apply_filters( 'simple_notifications_gravityflow_notify_on_complete', false, $step, $entry );
-        if ( ! $notify_on_complete ) {
-            return;
-        }
-
         $user_id = (int) $entry['created_by'];
-        $step_name = $step->get_name();
 
-        /* translators: %s: Step name */
-        $title = sprintf(
-            __( 'Step completed: %s', 'simple-notifications' ),
-            $step_name
-        );
+        // Get custom notification content
+        $notification_content = $step->get_setting( 'bell_notification_content' );
+
+        if ( ! empty( $notification_content ) ) {
+            // Process merge tags in the content
+            $title = $this->process_gravityflow_merge_tags( $notification_content, $entry, $form, $step );
+        } else {
+            // Default message
+            $step_name = $step->get_name();
+            /* translators: %s: Step name */
+            $title = sprintf(
+                __( 'Step completed: %s', 'simple-notifications' ),
+                $step_name
+            );
+        }
 
         $url = $this->get_gravityflow_entry_url( $entry_id, $form );
 
@@ -166,6 +232,29 @@ class Simple_Notifications_Integrations {
             $title,
             $url
         );
+    }
+
+    /**
+     * Process Gravity Forms/Flow merge tags
+     *
+     * @param string $text  Text with merge tags
+     * @param array  $entry Entry data
+     * @param array  $form  Form data
+     * @param object $step  Step object
+     * @return string Processed text
+     */
+    private function process_gravityflow_merge_tags( $text, $entry, $form, $step ) {
+        // Use Gravity Forms merge tag processing
+        if ( class_exists( 'GFCommon' ) ) {
+            $text = GFCommon::replace_variables( $text, $form, $entry, false, false, false );
+        }
+
+        // Process Gravity Flow specific merge tags
+        if ( class_exists( 'Gravity_Flow' ) && method_exists( 'Gravity_Flow_Merge_Tags', 'replace' ) ) {
+            $text = Gravity_Flow_Merge_Tags::replace( $text, $form, $entry, false, false, false, $step );
+        }
+
+        return $text;
     }
 
     /**
@@ -224,7 +313,7 @@ class Simple_Notifications_Integrations {
      * @return string URL
      */
     private function get_gravityflow_entry_url( $entry_id, $form ) {
-        if ( class_exists( 'Gravity_Flow' ) ) {
+        if ( class_exists( 'Gravity_Flow' ) && function_exists( 'gravity_flow' ) ) {
             $workflow_url = gravity_flow()->get_workflow_url( array(
                 'id' => $entry_id,
             ) );

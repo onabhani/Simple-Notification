@@ -75,15 +75,47 @@ class Simple_Notifications_API {
             return false;
         }
 
-        // Insert notification
+        // Insert notification (bell notification - always created)
         $notification_id = $this->db->insert( $notification_data );
 
         if ( $notification_id ) {
             // Fire action after creation
             do_action( 'simple_notifications_created', $notification_id, $notification_data );
+
+            // Handle email notifications with DOFS user preference filters
+            $this->maybe_send_email_notification( $notification_id, $notification_data );
         }
 
         return $notification_id;
+    }
+
+    /**
+     * Handle email notification sending with DOFS preference filters
+     *
+     * @param int   $notification_id Notification ID
+     * @param array $notification_data Notification data
+     */
+    private function maybe_send_email_notification( $notification_id, $notification_data ) {
+        $user_id     = $notification_data['user_id'];
+        $source_type = $notification_data['source_type'];
+
+        // Check if user wants email notification for this type
+        $wants_email = apply_filters( 'dofs_user_wants_email_notification', true, $user_id, $source_type );
+
+        if ( ! $wants_email ) {
+            return;
+        }
+
+        // Check if should send immediately or add to digest
+        $send_now = apply_filters( 'dofs_should_send_notification_now', true, $user_id, $source_type );
+
+        if ( $send_now ) {
+            // Send email immediately
+            do_action( 'simple_notifications_send_email', $notification_id, $notification_data );
+        } else {
+            // Add to digest queue
+            do_action( 'simple_notifications_queue_digest', $notification_id, $notification_data );
+        }
     }
 
     /**

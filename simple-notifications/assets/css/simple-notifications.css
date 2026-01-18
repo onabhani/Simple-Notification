@@ -1,0 +1,621 @@
+/**
+ * Simple Notifications - Frontend Styles
+ */
+
+/* Bell Component */
+.simple-notifications-bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.simple-notifications-bell-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px;
+    position: relative;
+    color: inherit;
+    transition: opacity 0.2s ease;
+}
+
+.simple-notifications-bell-icon:hover {
+    opacity: 0.8;
+}
+
+.simple-notifications-bell-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Badge */
+.simple-notifications-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    color: #fff;
+    background-color: #e53935;
+    border-radius: 10px;
+    display: none;
+}
+
+.simple-notifications-badge.has-unread {
+    display: block;
+}
+
+/* Dropdown */
+.simple-notifications-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 320px;
+    max-width: 90vw;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    z-index: 9999;
+    display: none;
+    overflow: hidden;
+}
+
+.simple-notifications-dropdown.is-open {
+    display: block;
+}
+
+/* Dropdown Header */
+.simple-notifications-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+}
+
+.simple-notifications-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.simple-notifications-mark-all {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.simple-notifications-mark-all:hover {
+    color: #059669;
+    background-color: #ecfdf5;
+}
+
+/* Notifications List */
+.simple-notifications-list {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.simple-notifications-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.simple-notifications-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.simple-notifications-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+/* Loading Spinner */
+.simple-notifications-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+}
+
+.simple-notifications-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e5e7eb;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: simple-notifications-spin 0.8s linear infinite;
+}
+
+@keyframes simple-notifications-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Notification Item */
+.simple-notifications-item {
+    display: block;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s ease;
+}
+
+.simple-notifications-item:hover {
+    background-color: #f9fafb;
+    text-decoration: none;
+}
+
+.simple-notifications-item.is-unread {
+    background-color: #eff6ff;
+}
+
+.simple-notifications-item.is-unread:hover {
+    background-color: #dbeafe;
+}
+
+.simple-notifications-item-source {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.simple-notifications-item-title {
+    display: block;
+    font-size: 13px;
+    color: #111827;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.simple-notifications-item-time {
+    display: block;
+    font-size: 11px;
+    color: #9ca3af;
+}
+
+/* Empty State */
+.simple-notifications-empty {
+    padding: 32px 16px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* Dropdown Footer */
+.simple-notifications-footer {
+    padding: 12px 16px;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    background-color: #f9fafb;
+}
+
+.simple-notifications-view-all {
+    font-size: 13px;
+    font-weight: 500;
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.simple-notifications-view-all:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+/* ============================================
+   Notifications Page Styles
+   ============================================ */
+
+.simple-notifications-page {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.simple-notifications-page-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.simple-notifications-page-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.simple-notifications-page-unread {
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    background-color: #3b82f6;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.simple-notifications-page-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+}
+
+/* Buttons */
+.simple-notifications-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.simple-notifications-btn:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.simple-notifications-btn-danger {
+    color: #dc2626;
+    border-color: #fca5a5;
+}
+
+.simple-notifications-btn-danger:hover {
+    background-color: #fef2f2;
+    border-color: #f87171;
+}
+
+/* Page List */
+.simple-notifications-page-list {
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.simple-notifications-page-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+}
+
+.simple-notifications-page-item:last-child {
+    border-bottom: none;
+}
+
+.simple-notifications-page-item:hover {
+    background-color: #f9fafb;
+}
+
+.simple-notifications-page-item.is-unread {
+    background-color: #eff6ff;
+}
+
+.simple-notifications-page-item.is-unread:hover {
+    background-color: #dbeafe;
+}
+
+.simple-notifications-page-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.simple-notifications-page-item-source {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+
+.simple-notifications-page-item-title {
+    display: block;
+    font-size: 14px;
+    color: #111827;
+    line-height: 1.5;
+    margin-bottom: 4px;
+    text-decoration: none;
+}
+
+a.simple-notifications-page-item-title:hover {
+    color: #3b82f6;
+    text-decoration: underline;
+}
+
+.simple-notifications-page-item-time {
+    display: block;
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.simple-notifications-page-item-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: 16px;
+}
+
+.simple-notifications-page-item-mark-read,
+.simple-notifications-page-item-delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.2s ease;
+}
+
+.simple-notifications-page-item-mark-read:hover {
+    color: #059669;
+    border-color: #a7f3d0;
+    background-color: #ecfdf5;
+}
+
+.simple-notifications-page-item-delete:hover {
+    color: #dc2626;
+    border-color: #fca5a5;
+    background-color: #fef2f2;
+}
+
+/* Pagination */
+.simple-notifications-page-pagination {
+    margin-top: 24px;
+    text-align: center;
+}
+
+/* Menu Item Override */
+.simple-notifications-menu-item {
+    display: flex !important;
+    align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .simple-notifications-dropdown {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        z-index: 99999;
+    }
+
+    .simple-notifications-list {
+        max-height: calc(100vh - 120px);
+    }
+
+    .simple-notifications-header {
+        padding: 16px;
+    }
+
+    .simple-notifications-close {
+        display: block;
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #6b7280;
+        font-size: 24px;
+        line-height: 1;
+    }
+
+    .simple-notifications-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .simple-notifications-page-actions {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .simple-notifications-page-actions .simple-notifications-btn {
+        flex: 1;
+    }
+
+    .simple-notifications-page-item {
+        flex-direction: column;
+    }
+
+    .simple-notifications-page-item-actions {
+        margin-left: 0;
+        margin-top: 12px;
+    }
+}
+
+/* ============================================
+   DOFS Dashboard Integration Styles
+   ============================================ */
+
+/* Badge count for DOFS topbar */
+.simple-notifications-badge-count {
+    display: inline-block;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    color: #fff;
+    background-color: #e53935;
+    border-radius: 9px;
+}
+
+.simple-notifications-badge-count:empty {
+    display: none;
+}
+
+/* DOFS dropdown container */
+.simple-notifications-dofs-dropdown {
+    width: 100%;
+    max-width: 360px;
+}
+
+.simple-notifications-dofs-dropdown .simple-notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.simple-notifications-dofs-dropdown .simple-notifications-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    border-top: 1px solid #e5e7eb;
+    background-color: #f9fafb;
+}
+
+.simple-notifications-mark-all-link {
+    background: none;
+    border: none;
+    font-size: 12px;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0;
+}
+
+.simple-notifications-mark-all-link:hover {
+    color: #3b82f6;
+    text-decoration: underline;
+}
+
+/* ============================================
+   Floating Bell Styles
+   ============================================ */
+
+.simple-notifications-floating {
+    position: fixed;
+    z-index: 99999;
+}
+
+.simple-notifications-floating-bottom-right {
+    bottom: 24px;
+    right: 24px;
+}
+
+.simple-notifications-floating-bottom-left {
+    bottom: 24px;
+    left: 24px;
+}
+
+.simple-notifications-floating-top-right {
+    top: 24px;
+    right: 24px;
+}
+
+.simple-notifications-floating-top-left {
+    top: 24px;
+    left: 24px;
+}
+
+.simple-notifications-floating .simple-notifications-bell {
+    background-color: #3b82f6;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.simple-notifications-floating .simple-notifications-bell:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.simple-notifications-floating .simple-notifications-bell-icon {
+    color: #fff;
+    padding: 14px;
+}
+
+.simple-notifications-floating .simple-notifications-bell-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.simple-notifications-floating .simple-notifications-badge {
+    top: -4px;
+    right: -4px;
+    min-width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 11px;
+}
+
+.simple-notifications-floating .simple-notifications-dropdown {
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 12px;
+    top: auto;
+}
+
+.simple-notifications-floating-bottom-left .simple-notifications-dropdown,
+.simple-notifications-floating-top-left .simple-notifications-dropdown {
+    left: 0;
+    right: auto;
+}
+
+.simple-notifications-floating-top-right .simple-notifications-dropdown,
+.simple-notifications-floating-top-left .simple-notifications-dropdown {
+    bottom: auto;
+    top: 100%;
+    margin-top: 12px;
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .simple-notifications-floating {
+        bottom: 16px;
+        right: 16px;
+    }
+
+    .simple-notifications-floating-bottom-left {
+        left: 16px;
+        right: auto;
+    }
+}

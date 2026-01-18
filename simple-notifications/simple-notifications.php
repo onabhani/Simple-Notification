@@ -26,6 +26,7 @@ require_once SIMPLE_NOTIFICATIONS_PLUGIN_DIR . 'includes/class-simple-notificati
 require_once SIMPLE_NOTIFICATIONS_PLUGIN_DIR . 'includes/class-simple-notifications-ajax.php';
 require_once SIMPLE_NOTIFICATIONS_PLUGIN_DIR . 'includes/class-simple-notifications-frontend.php';
 require_once SIMPLE_NOTIFICATIONS_PLUGIN_DIR . 'includes/class-simple-notifications-integrations.php';
+require_once SIMPLE_NOTIFICATIONS_PLUGIN_DIR . 'includes/class-simple-notifications-admin.php';
 
 /**
  * Main plugin class
@@ -71,6 +72,9 @@ class Simple_Notifications {
     public function init() {
         // Initialize database handler
         Simple_Notifications_DB::get_instance();
+
+        // Initialize admin settings (must be early to apply filters)
+        Simple_Notifications_Admin::get_instance();
 
         // Initialize API
         Simple_Notifications_API::get_instance();

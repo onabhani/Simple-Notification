@@ -64,6 +64,11 @@ class Simple_Notifications_Frontend {
 
         // Generic action hook for custom placements
         add_action( 'simple_notifications_render_bell', array( $this, 'action_render_bell' ) );
+
+        // Floating bell (disabled by default when using DOFS dashboard)
+        if ( apply_filters( 'simple_notifications_show_floating_bell', false ) ) {
+            add_action( 'wp_footer', array( $this, 'render_floating_bell' ) );
+        }
     }
 
     /**
@@ -159,6 +164,22 @@ class Simple_Notifications_Frontend {
             return;
         }
         echo $this->render_bell();
+    }
+
+    /**
+     * Render floating bell in footer
+     */
+    public function render_floating_bell() {
+        if ( ! is_user_logged_in() ) {
+            return;
+        }
+
+        $position = apply_filters( 'simple_notifications_floating_position', 'bottom-right' );
+        ?>
+        <div class="simple-notifications-floating simple-notifications-floating-<?php echo esc_attr( $position ); ?>">
+            <?php echo $this->render_bell( 'simple-notifications-bell-floating' ); ?>
+        </div>
+        <?php
     }
 
     /**

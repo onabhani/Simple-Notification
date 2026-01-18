@@ -526,3 +526,96 @@ a.simple-notifications-page-item-title:hover {
     color: #3b82f6;
     text-decoration: underline;
 }
+
+/* ============================================
+   Floating Bell Styles
+   ============================================ */
+
+.simple-notifications-floating {
+    position: fixed;
+    z-index: 99999;
+}
+
+.simple-notifications-floating-bottom-right {
+    bottom: 24px;
+    right: 24px;
+}
+
+.simple-notifications-floating-bottom-left {
+    bottom: 24px;
+    left: 24px;
+}
+
+.simple-notifications-floating-top-right {
+    top: 24px;
+    right: 24px;
+}
+
+.simple-notifications-floating-top-left {
+    top: 24px;
+    left: 24px;
+}
+
+.simple-notifications-floating .simple-notifications-bell {
+    background-color: #3b82f6;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.simple-notifications-floating .simple-notifications-bell:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.simple-notifications-floating .simple-notifications-bell-icon {
+    color: #fff;
+    padding: 14px;
+}
+
+.simple-notifications-floating .simple-notifications-bell-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.simple-notifications-floating .simple-notifications-badge {
+    top: -4px;
+    right: -4px;
+    min-width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 11px;
+}
+
+.simple-notifications-floating .simple-notifications-dropdown {
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 12px;
+    top: auto;
+}
+
+.simple-notifications-floating-bottom-left .simple-notifications-dropdown,
+.simple-notifications-floating-top-left .simple-notifications-dropdown {
+    left: 0;
+    right: auto;
+}
+
+.simple-notifications-floating-top-right .simple-notifications-dropdown,
+.simple-notifications-floating-top-left .simple-notifications-dropdown {
+    bottom: auto;
+    top: 100%;
+    margin-top: 12px;
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .simple-notifications-floating {
+        bottom: 16px;
+        right: 16px;
+    }
+
+    .simple-notifications-floating-bottom-left {
+        left: 16px;
+        right: auto;
+    }
+}

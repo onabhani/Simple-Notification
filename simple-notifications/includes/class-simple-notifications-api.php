@@ -286,6 +286,7 @@ class Simple_Notifications_API {
             'hr_loan'     => __( 'Loan Request', 'simple-notifications' ),
             'hr_expense'  => __( 'Expense Request', 'simple-notifications' ),
             'hr_overtime' => __( 'Overtime Request', 'simple-notifications' ),
+            'mention'     => __( 'Mention', 'simple-notifications' ),
             'custom'      => __( 'Notification', 'simple-notifications' ),
         ) );
 
